@@ -8,7 +8,6 @@ namespace ConsoleApplication
         {
             Console.Clear();
             Console.WriteLine("Hello World!");
-            Console.ReadLine();
 
             for(var i=0; i<args.Length; i++) {
                 Console.WriteLine(args[i]);
