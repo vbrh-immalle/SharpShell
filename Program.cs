@@ -4,13 +4,12 @@ using System.IO;
 
 namespace ConsoleApplication
 {
-    public class Program
-    {
-        enum Status {
-            NoNameGiven,
-            DirMade,
-            DirExists
-        }
+    public class MakeDir {
+        public enum Status {
+                    NoNameGiven,
+                    DirMade,
+                    DirExists
+                }
 
         static Dictionary<Status, string> melding = new Dictionary<Status, string>() {
                 { Status.NoNameGiven, "Kan directory niet maken: naam niet opgegeven." },
@@ -24,10 +23,39 @@ namespace ConsoleApplication
                 { Status.DirExists, ConsoleColor.Yellow }
             };
 
-        private static void HandleState(Status status, string dirnaam = "") {          
+        public static void HandleState(Status status, string dirnaam = "") {          
             Console.ForegroundColor = kleur[status];
             Console.WriteLine(melding[status], dirnaam);
             Console.ResetColor();
+        }
+    }
+
+    public class RemoveDir {
+        public enum Status {
+                    NoNameGiven,
+                    DirRemoved,
+                    DirDoesntExist
+                }
+
+        static Dictionary<Status, string> melding = new Dictionary<Status, string>() {
+                { Status.NoNameGiven, "Kan directory niet verwijderen: naam niet opgegeven." },
+                { Status.DirRemoved, "Directory [{0}] verwijderd." },
+                { Status.DirDoesntExist, "Kan directory niet verwijderen: directory [{0}] bestaat niet." }
+            };
+
+        static Dictionary<Status, ConsoleColor> kleur = new Dictionary<Status, ConsoleColor>() {
+                { Status.NoNameGiven, ConsoleColor.Red },
+                { Status.DirRemoved, ConsoleColor.Green },
+                { Status.DirDoesntExist, ConsoleColor.Yellow }
+            };
+    }
+
+    public class Program
+    {
+        enum Status {
+            InvalidCommand,
+            MakeDirCommand,
+            RemoveDirCommand
         }
 
         public static void Main(string[] args)
@@ -36,14 +64,14 @@ namespace ConsoleApplication
             Console.WriteLine("Hello World!");
 
             if(args.Length <= 1) {
-                HandleState(Status.NoNameGiven);
+                MakeDir.HandleState(MakeDir.Status.NoNameGiven);
             } else {
                 string naam = args[0];
                 if(Directory.Exists(naam)) {
-                    HandleState(Status.DirExists, naam);
+                    MakeDir.HandleState(MakeDir.Status.DirExists, naam);
                 } else {
                     Directory.CreateDirectory(naam);
-                    HandleState(Status.DirMade, naam);
+                    MakeDir.HandleState(MakeDir.Status.DirMade, naam);
                 }
             }
         }
