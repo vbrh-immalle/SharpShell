@@ -1,14 +1,144 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ConsoleApplication
+namespace ConsoleApplication1
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void setPromptColor()
         {
-            Console.Clear();
-            Console.WriteLine("Hello World!");
-            Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+        }
+
+        static void setInfoColor()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+        }
+
+        static void setDataColor()
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        static void setErrorColor()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+        }
+
+        
+        static void ShowCurrentDirectory()
+        {
+            setInfoColor();
+            Console.WriteLine("Files in current directory:");
+
+            //string dir = Directory.GetCurrentDirectory();
+            DirectoryInfo d = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+            Console.WriteLine("Directories:");
+            setDataColor();
+            foreach (DirectoryInfo dir in d.GetDirectories())
+            {
+                Console.WriteLine(dir.FullName);
+            }
+
+            setInfoColor();
+            Console.WriteLine("Files:");
+            setDataColor();
+            foreach (FileInfo file in d.GetFiles())
+            {
+                Console.WriteLine(file.FullName);
+            }
+        }
+
+        static void ChangeDirectory()
+        {
+            setInfoColor();
+            Console.Write("Change to directory: ");
+            setDataColor();
+            string path = Console.ReadLine();
+            
+            try
+            {
+                Directory.SetCurrentDirectory(path);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                setErrorColor();
+                Console.WriteLine(path + " not found.");
+            }
+        }
+
+        static void ReadFileOrDirectory()
+        {
+            setInfoColor();
+            Console.Write("What do I have to read? ");
+            setDataColor();
+            string obj = Console.ReadLine();
+
+            if(Directory.Exists(obj)) {
+                setInfoColor();
+                Console.WriteLine("Contents of directory [{0}]:", obj);
+                setDataColor();
+                foreach(string fileEntry in Directory.GetFileSystemEntries(obj))
+                {
+                    Console.WriteLine(fileEntry);
+                }
+            } else if(File.Exists(obj))
+            {
+                setInfoColor();
+                Console.WriteLine("Contents of file [{0}]:", obj);
+                setDataColor();
+                Console.WriteLine(File.ReadAllText(obj));
+            } else
+            {
+                setErrorColor();
+                Console.WriteLine("Cannot read [{0}], not a file or directory!", obj);
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            Console.CancelKeyPress += Console_CancelKeyPress;
+
+            while(true)
+            {
+                setPromptColor();
+                Console.Write("Enter command : ");
+                ConsoleKeyInfo key = Console.ReadKey();
+                Console.WriteLine();
+                Console.WriteLine();
+                switch (key.Key)
+                {
+                    case ConsoleKey.L:
+                        ShowCurrentDirectory();
+                        break;
+                    case ConsoleKey.C:
+                        ChangeDirectory();
+                        break;
+                    case ConsoleKey.R:
+                        ReadFileOrDirectory();
+                        break;
+                    case ConsoleKey.Q:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        setErrorColor();
+                        Console.WriteLine("Invalid command");
+                        break;
+                }
+            }
+            
+        }
+
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            setErrorColor();
+            Console.WriteLine("Exit requested. Exiting.");
+            Environment.Exit(0);
         }
     }
 }
