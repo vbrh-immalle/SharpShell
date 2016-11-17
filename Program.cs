@@ -119,11 +119,12 @@ namespace ConsoleApplication1
                 setPromptColor();
                 Console.Write("Enter command : ");
                 ConsoleKeyInfo key = Console.ReadKey();
+                
                 Console.WriteLine();
                 Console.WriteLine();
                 if (cmds.ContainsKey(key.Key))
                 {
-                    cmds[key.Key]();
+                    cmds[key.Key].Invoke();
                 }
                 else
                 {
