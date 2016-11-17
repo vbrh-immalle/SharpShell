@@ -103,11 +103,6 @@ namespace ConsoleApplication1
             }
         }
 
-        static void Exit()
-        {
-            Environment.Exit(0);
-        }
-
         static void Main(string[] args)
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
@@ -116,7 +111,7 @@ namespace ConsoleApplication1
                 { ConsoleKey.L, ShowCurrentDirectory },
                 { ConsoleKey.C, ChangeDirectory },
                 { ConsoleKey.R, ReadFileOrDirectory },
-                { ConsoleKey.Q, Exit }
+                { ConsoleKey.Q, () => Environment.Exit(0) }
             };
 
             while (true)
